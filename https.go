@@ -37,8 +37,8 @@ var (
 )
 
 // ConnectAction enables the caller to override the standard connect flow.
-// When Action is ConnectHijack, it is up to the implementer to send the 
-// HTTP 200, or any other valid http response back to the client from within the 
+// When Action is ConnectHijack, it is up to the implementer to send the
+// HTTP 200, or any other valid http response back to the client from within the
 // Hijack func
 type ConnectAction struct {
 	Action    ConnectActionLiteral
@@ -215,7 +215,8 @@ func (proxy *ProxyHttpServer) handleHttps(w http.ResponseWriter, r *http.Request
 
 				// Bug fix which goproxy fails to provide request
 				// information URL in the context when does HTTPS MITM
-				ctx.Req = req
+				// Preserve context for new request
+				ctx.Req = req.WithContext(ctx.Req.Context())
 
 				req, resp := proxy.filterRequest(req, ctx)
 				if resp == nil {
